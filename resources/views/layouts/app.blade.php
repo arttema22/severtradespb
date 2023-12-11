@@ -7,6 +7,8 @@
 
     <title>Laravel</title>
 
+    <script src="https://cdn.tailwindcss.com"></script>
+
     @moonShineAssets
 
 </head>

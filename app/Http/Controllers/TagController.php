@@ -20,7 +20,6 @@ class TagController extends Controller
                 ->where('slug', $slug)
                 ->where('type', 1)
                 ->where('is_publish', 1)
-                ->with(['products'])
                 ->first();
 
             return view('tags.show', [

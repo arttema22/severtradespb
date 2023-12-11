@@ -19,10 +19,27 @@ class Category extends Model
     }
 
     /**
+     * Может стоит удалить?????
      * Родительские категории.
      */
     public function category(): BelongsTo
     {
         return $this->belongsTo(self::class);
+    }
+
+    /**
+     * Для категории выдаст первый дочерний уровень
+     */
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
+    }
+
+    /**
+     * Для категории выдаст все дочерние уровни.
+     */
+    public function childrenCategories()
+    {
+        return $this->hasMany(Category::class)->with('categories');
     }
 }
