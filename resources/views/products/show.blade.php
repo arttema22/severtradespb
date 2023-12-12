@@ -79,7 +79,7 @@
         </nav> --}}
 
         <x-moonshine::box title="catalog">
-            <ul>
+            <ul class="relative">
                 @foreach ($categories as $category)
                 <li class="peer/{{$category->id}} hover:bg-slate-100">
                     <x-moonshine::link-native :href="route('categories.index', $category->slug)">
@@ -87,7 +87,7 @@
                     </x-moonshine::link-native>
                 </li>
 
-                <ul class="pl-4 hidden peer-hover/{{$category->id}}:block">
+                <ul class="absolute pl-4 hidden peer-hover/{{$category->id}}:block">
                     @foreach ($category->childrenCategories as $childCategory)
                     <li>
                         <x-moonshine::link-native :href="route('categories.index', $childCategory->slug)">
