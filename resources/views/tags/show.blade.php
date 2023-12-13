@@ -1,5 +1,13 @@
 @extends('layouts.app')
 
+@section('meta')
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{$tag->name}}</title>
+<meta name="description" content="{{$tag->meta_description}}" />
+<meta name="keywords" content="{{$tag->meta_keywords}}" />
+@endsection
+
 @section('content')
 <x-moonshine::grid>
     <x-moonshine::column colSpan="4">

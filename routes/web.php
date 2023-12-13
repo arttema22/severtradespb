@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TagController;
 
@@ -34,6 +35,13 @@ Route::controller(TagController::class)
 Route::controller(ProductController::class)
     ->name('products.')
     ->prefix('products')->group(function () {
+        Route::get('/{slug?}', 'index')->name('index');
+    });
+
+Route::controller(PageController::class)
+    ->name('pages.')
+    // ->prefix('pages')
+    ->group(function () {
         Route::get('/{slug?}', 'index')->name('index');
     });
 

@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Models\Category;
+use App\Models\Page;
 use App\Models\Product;
 use App\Models\Tag;
 use App\MoonShine\Resources\CategoryResource;
+use App\MoonShine\Resources\PageResource;
 use MoonShine\MoonShine;
 use MoonShine\Menu\MenuItem;
 use MoonShine\Menu\MenuGroup;
@@ -59,6 +61,15 @@ class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
             MenuItem::make('catalog', fn () => route('categories.index'))
                 ->icon('heroicons.outline.square-3-stack-3d')
                 ->translatable('product')
+                ->canSee(fn () => !request()->routeIs('moonshine.*')),
+
+            MenuItem::make('pages', new PageResource)->icon('heroicons.outline.document-text')
+                ->translatable('page')
+                ->badge(fn () => strval(Page::query()->count()))
+                ->canSee(fn () => request()->routeIs('moonshine.*')),
+
+            MenuItem::make('contact', 'http://localhost:8000/contact')
+                ->translatable('page')
                 ->canSee(fn () => !request()->routeIs('moonshine.*')),
         ];
     }

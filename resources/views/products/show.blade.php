@@ -1,5 +1,13 @@
 @extends('layouts.app')
 
+@section('meta')
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{$product->title}}</title>
+<meta name="description" content="{{$product->meta_description}}" />
+<meta name="keywords" content="{{$product->meta_keywords}}" />
+@endsection
+
 @section('content')
 <x-moonshine::grid class="mb-6">
     <x-moonshine::column colSpan="3">
