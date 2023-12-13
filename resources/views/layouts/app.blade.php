@@ -3,11 +3,8 @@
 
 <head>
     @yield('meta')
-
     <script src="https://cdn.tailwindcss.com"></script>
-
     @moonShineAssets
-
 </head>
 
 <x-moonshine::layout>
