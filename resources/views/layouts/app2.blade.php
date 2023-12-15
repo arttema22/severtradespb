@@ -3,8 +3,7 @@
 
 <head>
     @yield('meta')
-    <script src="https://cdn.tailwindcss.com"></script>
-    {{-- @moonShineAssets --}}
+    @vite('resources/css/app.css')
 </head>
 
 <body>
