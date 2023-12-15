@@ -19,7 +19,6 @@
             </x-moonshine::column>
         </x-moonshine::grid>
     </main>
-    <script src="./node_modules/preline/dist/preline.js"></script>
 </x-moonshine::layout>
 
 </html>

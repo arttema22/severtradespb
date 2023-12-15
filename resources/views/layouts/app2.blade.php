@@ -4,6 +4,7 @@
 <head>
     @yield('meta')
     @vite('resources/css/app.css')
+    @vite('resources/js/app.js')
 </head>
 
 <body>
@@ -169,7 +170,6 @@
         </div>
         <!-- End Grid -->
     </footer>
-    <script src="./node_modules/preline/dist/preline.js"></script>
 </body>
 
 </html>
