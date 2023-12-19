@@ -38,9 +38,11 @@ class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
                 MenuItem::make('products', new ProductResource)->icon('heroicons.outline.square-3-stack-3d')->translatable('product')
                     ->badge(fn () => strval(Product::query()->count())),
                 MenuItem::make('categories', new CategoryResource)->icon('heroicons.outline.queue-list')->translatable('product')
-                    ->badge(fn () => strval(Category::query()->count())),
+                    ->badge(fn () => strval(Category::query()->where('type', 1)->count())),
                 MenuItem::make('tags', new TagResource)->icon('heroicons.outline.tag')->translatable('product')
-                    ->badge(fn () => strval(Tag::query()->count())),
+                    ->badge(fn () => strval(Tag::query()
+                        ->where('type', 1)
+                        ->count())),
             ])->icon('heroicons.square-3-stack-3d')->translatable('product')
                 ->canSee(fn () => request()->routeIs('moonshine.*')),
 

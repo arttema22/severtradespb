@@ -14,4 +14,10 @@ return [
     'size' => 'Размер',
     'mark' => 'Марка',
     'length' => 'Длина',
+    'name' => 'Название',
+    'slug' => 'Слаг',
+    'description' => 'Описание',
+    'characteristics' => 'Характеристики',
+    'meta_description' => 'Мета описание',
+    'meta_keywords' => 'Мета ключевые слова',
 ];

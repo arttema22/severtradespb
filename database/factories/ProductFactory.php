@@ -18,7 +18,7 @@ class ProductFactory extends Factory
     {
         return [
             'user_id' => fake()->numberBetween(1, 1),
-            'title' => ucfirst($this->faker->words(2, true)),
+            'name' => ucfirst($this->faker->words(2, true)),
             'slug' => $this->faker->slug(),
             'description' => $this->faker->text(),
             'size' => $this->faker->words(1, true),

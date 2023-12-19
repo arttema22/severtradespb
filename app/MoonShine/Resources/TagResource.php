@@ -11,6 +11,7 @@ use MoonShine\Fields\Date;
 use MoonShine\Fields\Slug;
 use MoonShine\Fields\Text;
 use MoonShine\Fields\Image;
+use MoonShine\Fields\Hidden;
 use MoonShine\Fields\TinyMce;
 use MoonShine\Fields\Position;
 use MoonShine\Fields\Switcher;
@@ -20,10 +21,12 @@ use MoonShine\Enums\ClickAction;
 use MoonShine\Decorations\Column;
 use MoonShine\Fields\StackFields;
 use MoonShine\QueryTags\QueryTag;
+use Illuminate\Support\Facades\Auth;
 use MoonShine\Resources\ModelResource;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use MoonShine\ActionButtons\ActionButton;
+use MoonShine\Decorations\Block;
 use MoonShine\Fields\Relationships\BelongsToMany;
 
 class TagResource extends ModelResource
@@ -45,6 +48,14 @@ class TagResource extends ModelResource
         return __('product.tags');
     }
 
+    /*
+    * Основной запрос
+    */
+    public function query(): Builder
+    {
+        return parent::query()->where('type', 1);
+    }
+
     public function indexFields(): array
     {
         return [
@@ -64,31 +75,36 @@ class TagResource extends ModelResource
     public function formFields(): array
     {
         return [
+            Hidden::make('user_id')->fill(Auth()->id()),
+            Hidden::make('type')->fill('1'),
             Grid::make([
                 Column::make([
-                    Text::make('name')->required(),
-                    Slug::make('slug')->from('name')->unique(),
-                    Text::make('meta_keywords'),
+                    Block::make([
+                        Text::make('name')->required()->translatable('product'),
+                        Slug::make('slug')->from('name')->unique()->translatable('product'),
+                        Textarea::make('description')->translatable('product'),
+                        Switcher::make('publish', 'is_publish')->translatable('product'),
+                    ]),
                 ])->columnSpan(6),
                 Column::make([
-                    Text::make('user_id')->required(),
-                    Text::make('type')->required(),
-                    Image::make('thumbnail')->dir('categories')->translatable('product'),
-                    Switcher::make('publish', 'is_publish')->translatable('product'),
+                    Textarea::make('meta_description')->translatable('product'),
+                    Text::make('meta_keywords')->translatable('product'),
+                    Image::make('thumbnail')->dir('products')->removable()->translatable('product'),
                 ])->columnSpan(6),
             ]),
-            Textarea::make('description')->translatable('product'),
-            Textarea::make('meta_description')->translatable('product'),
         ];
     }
 
     public function rules(Model $item): array
     {
         return [
-            'user_id' => ['required'],
-            'type' => ['required'],
             'name' => ['required'],
+            'slug' => ['nullable'],
+            'description' => ['nullable'],
+            'thumbnail' => ['nullable', 'dimensions:min_width=100,min_height=200'],
             'is_publish' => ['required'],
+            'meta_description' => ['nullable'],
+            'meta_keywords' => ['nullable'],
         ];
     }
 

@@ -10,10 +10,14 @@ use MoonShine\Fields\Date;
 use MoonShine\Fields\Slug;
 use MoonShine\Fields\Text;
 use MoonShine\Fields\Image;
+use MoonShine\Fields\Hidden;
 use MoonShine\Fields\TinyMce;
 use MoonShine\Fields\Position;
 use MoonShine\Fields\Switcher;
 use MoonShine\Fields\Textarea;
+use MoonShine\Decorations\Grid;
+use MoonShine\Decorations\Block;
+use MoonShine\Decorations\Column;
 use MoonShine\Fields\StackFields;
 use MoonShine\QueryTags\QueryTag;
 use MoonShine\Resources\ModelResource;
@@ -27,9 +31,9 @@ class ProductResource extends ModelResource
 {
     protected string $model = Product::class;
 
-    protected bool $createInModal = true;
+    // protected bool $createInModal = true;
 
-    protected bool $editInModal = true;
+    // protected bool $editInModal = true;
 
     public string $column = 'title';
 
@@ -46,18 +50,20 @@ class ProductResource extends ModelResource
             Position::make(),
             Image::make('thumbnail')->dir('products')->translatable('product'),
             StackFields::make('title')->fields([
-                Text::make('title')->translatable('product'),
+                Text::make('name')->translatable('product'),
                 Slug::make('slug')->translatable('product'),
             ])->translatable('product'),
             Text::make('size')->sortable()->translatable('product'),
             Text::make('mark')->sortable()->translatable('product'),
             Text::make('length')->sortable()->translatable('product'),
-            Switcher::make('publish', 'is_publish')->translatable('product')->sortable(),
+            Switcher::make('publish', 'is_publish')->updateOnPreview()->translatable('product')->sortable(),
             BelongsToMany::make('categories', 'categories', resource: new CategoryResource)
                 ->inLine(separator: ' ', badge: true)
+                ->creatable()
                 ->translatable('product'),
             BelongsToMany::make('tags', 'tags', resource: new TagResource)
                 ->inLine(separator: ' ', badge: true)
+                ->creatable()
                 ->translatable('product'),
         ];
     }
@@ -65,45 +71,62 @@ class ProductResource extends ModelResource
     public function formFields(): array
     {
         return [
-            ID::make(),
-            Text::make('user_id'),
-            Text::make('title'),
-            Slug::make('slug')
-                ->from('title')
-                ->unique(),
-            TinyMce::make('description'),
-            Text::make('size'),
-            Text::make('mark'),
-            Text::make('length'),
-            Image::make('thumbnail')->dir('products')->translatable('product'),
-            Text::make('characteristics'),
-            Textarea::make('meta_description'),
-            Text::make('meta_keywords'),
-            Switcher::make('publish', 'is_publish')->translatable('product'),
-            Date::make('created_at'),
-            Date::make('updated_at'),
-            Date::make('deleted_at'),
-            BelongsToMany::make('categories', 'categories', resource: new CategoryResource)
-                ->creatable()
-                //->tree('parent_id')
-                ->translatable('product'),
-            BelongsToMany::make('tags', 'tags', resource: new TagResource)
-                ->creatable()
-                ->selectMode()
-                ->translatable('product'),
-        ];
-    }
+            Hidden::make('user_id')->fill(Auth()->id()),
+            Grid::make([
+                Column::make([
+                    Block::make([
+                        Text::make('name')->required()->translatable('product'),
+                        Slug::make('slug')->from('name')->unique()->translatable('product'),
+                        TinyMce::make('description')->translatable('product'),
+                        Text::make('characteristics')->translatable('product'),
+                        Grid::make([
+                            Column::make([
+                                Text::make('size')->translatable('product'),
+                            ])->columnSpan(4),
+                            Column::make([
+                                Text::make('mark')->translatable('product'),
+                            ])->columnSpan(4),
+                            Column::make([
+                                Text::make('length')->translatable('product'),
+                            ])->columnSpan(4),
+                        ]),
+                        Switcher::make('publish', 'is_publish')->translatable('product'),
+                    ]),
+                ])->columnSpan(8),
+                Column::make([
+                    Textarea::make('meta_description')->translatable('product'),
+                    Text::make('meta_keywords')->translatable('product'),
+                    Image::make('thumbnail')->dir('products')->removable()->translatable('product'),
 
-    public function detailFields(): array
-    {
-        return [
-            ID::make()->sortable(),
+                    BelongsToMany::make('categories', 'categories', resource: new CategoryResource)
+                        ->creatable()
+                        //->tree('category_id')
+                        ->selectMode()
+                        ->translatable('product'),
+                    BelongsToMany::make('tags', 'tags', resource: new TagResource)
+                        ->creatable()
+                        ->selectMode()
+                        ->translatable('product'),
+                ])->columnSpan(4),
+            ]),
         ];
     }
 
     public function rules(Model $item): array
     {
-        return [];
+        return [
+            'name' => ['required'],
+            'slug' => ['nullable'],
+            'description' => ['nullable'],
+            'size' => ['nullable'],
+            'mark' => ['nullable'],
+            'length' => ['nullable'],
+            'thumbnail' => ['nullable', 'dimensions:min_width=100,min_height=200'],
+            'characteristics' => ['nullable'],
+            'is_publish' => ['required'],
+            'meta_description' => ['nullable'],
+            'meta_keywords' => ['nullable'],
+        ];
     }
 
     /*
@@ -136,9 +159,9 @@ class ProductResource extends ModelResource
     public function filters(): array
     {
         return [
-            Text::make('size'),
-            Text::make('mark')->sortable(),
-            Text::make('length')->sortable(),
+            Text::make('size')->translatable('product'),
+            Text::make('mark')->sortable()->translatable('product'),
+            Text::make('length')->sortable()->translatable('product'),
         ];
     }
 

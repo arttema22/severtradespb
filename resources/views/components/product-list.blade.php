@@ -26,7 +26,7 @@
                     <div class="grow ms-5">
                         <h3
                             class="group-hover:text-blue-600 font-semibold text-gray-800 dark:group-hover:text-gray-400 dark:text-gray-200">
-                            {{ $product->title }}
+                            {{ $product->name }}
                         </h3>
                         <p class="text-sm text-gray-500">
                             {{ $product->description }}

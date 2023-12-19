@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\Category;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -20,7 +21,12 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->integer('type')->default('1')->comment('Тип');
-            $table->bigInteger('parent_id')->comment('Родитель');
+            $table->foreignIdFor(Category::class)
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete()
+                ->cascadeOnUpdate();
+            $table->integer('sorting')->default(0);
             $table->string('name')->comment('Название');
             $table->string('slug')->comment('Slug');
             $table->text('description')->nullable()->comment('Описание');

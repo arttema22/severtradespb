@@ -19,7 +19,7 @@ return new class extends Migration
                 ->on('moonshine_users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->string('title')->comment('Заголовок');
+            $table->string('name')->comment('Заголовок');
             $table->string('slug')->comment('Slug');
             $table->text('description')->nullable()->comment('Описание');
             $table->string('size')->nullable()->comment('Размер');

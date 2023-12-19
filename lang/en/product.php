@@ -14,4 +14,10 @@ return [
     'size' => 'Size',
     'mark' => 'Mark',
     'length' => 'Length',
+    'name' => 'Name',
+    'slug' => 'Slug',
+    'description' => 'Description',
+    'characteristics' => 'Characteristics',
+    'meta_description' => 'Meta description',
+    'meta_keywords' => 'Meta keywords',
 ];

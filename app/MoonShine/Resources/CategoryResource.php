@@ -4,20 +4,22 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources;
 
-use App\Models\Category;
 use App\Models\Product;
+use App\Models\Category;
 use MoonShine\Fields\ID;
 use MoonShine\Fields\Date;
 
 use MoonShine\Fields\Slug;
 use MoonShine\Fields\Text;
 use MoonShine\Fields\Image;
+use MoonShine\Fields\Hidden;
 use MoonShine\Fields\Number;
 use MoonShine\Fields\TinyMce;
 use MoonShine\Fields\Position;
 use MoonShine\Fields\Switcher;
 use MoonShine\Fields\Textarea;
 use MoonShine\Decorations\Grid;
+use MoonShine\Decorations\Block;
 use MoonShine\Decorations\Column;
 use MoonShine\Fields\StackFields;
 use MoonShine\QueryTags\QueryTag;
@@ -27,9 +29,9 @@ use MoonShine\Resources\ModelResource;
 use Illuminate\Database\Eloquent\Model;
 use App\MoonShine\Pages\CategoryTreePage;
 use Illuminate\Database\Eloquent\Builder;
-use Leeto\MoonShineTree\Resources\TreeResource;
 use MoonShine\ActionButtons\ActionButton;
 use MoonShine\Fields\Relationships\BelongsTo;
+use Leeto\MoonShineTree\Resources\TreeResource;
 use MoonShine\Fields\Relationships\BelongsToMany;
 
 class CategoryResource extends TreeResource
@@ -51,6 +53,14 @@ class CategoryResource extends TreeResource
         return __('product.categories');
     }
 
+    /*
+    * Основной запрос
+    */
+    public function query(): Builder
+    {
+        return parent::query()->where('type', 1);
+    }
+
     protected function pages(): array
     {
         return [
@@ -64,90 +74,45 @@ class CategoryResource extends TreeResource
         ];
     }
 
-    // public function fields(): array
-    // {
-    //     return [
-    //         Position::make(),
-    //         ID::make()->showOnExport(),
-    //         Text::make('user_id')->showOnExport(),
-    //         Text::make('type')->showOnExport(),
-    //         Image::make('thumbnail')->dir('products')->translatable('product')->showOnExport(),
-    //         StackFields::make('title')->fields([
-    //             Text::make('name')->updateOnPreview()->showOnExport(),
-    //             Slug::make('slug')->showOnExport(),
-    //         ])->translatable('product'),
-    //         TinyMce::make('description'),
-    //         Textarea::make('meta_description'),
-    //         Text::make('meta_keywords'),
-    //         BelongsTo::make('parent', 'category', resource: new CategoryResource())
-    //             ->nullable()
-    //             ->badge()
-    //             ->translatable('product')
-    //             ->showOnExport(),
-    //         Switcher::make('publish', 'is_publish')->updateOnPreview()->translatable('product')->sortable()->showOnExport(),
-    //         BelongsToMany::make('products', 'products', resource: new ProductResource)
-    //             ->onlyCount()
-    //             ->translatable('product')->showOnExport(),
-    //         Number::make('sorting')->buttons()->default(0),
-    //     ];
-    // }
-
-    // public function indexFields(): array
-    // {
-    //     return [
-    //         Position::make(),
-    //         Image::make('thumbnail')->dir('products')->translatable('product')->showOnExport(),
-    //         StackFields::make('title')->fields([
-    //             Text::make('name')->updateOnPreview()->showOnExport(),
-    //             Slug::make('slug')->showOnExport(),
-    //         ])->translatable('product'),
-    //         BelongsTo::make('parent', 'category', resource: new CategoryResource())
-    //             ->nullable()
-    //             ->badge()
-    //             ->translatable('product')
-    //             ->showOnExport(),
-    //         Switcher::make('publish', 'is_publish')->updateOnPreview()->translatable('product')->sortable()->showOnExport(),
-    //         // BelongsToMany::make('products', 'products', resource: new ProductResource)
-    //         //     ->onlyCount()
-    //         //     ->translatable('product')->showOnExport() ,
-    //         ID::make()->showOnExport(),
-    //     ];
-    // }
-
     public function formFields(): array
     {
         return [
+            Hidden::make('user_id')->fill(Auth()->id()),
+            Hidden::make('type')->fill('1'),
             Grid::make([
                 Column::make([
-                    Text::make('name')->required(),
-                    Slug::make('slug')->from('name')->unique(),
-                    BelongsTo::make('parent', 'category', resource: new CategoryResource())
-                        ->nullable()
-                        ->badge()
-                        ->translatable('product')
-                        ->asyncSearch(),
-                    Text::make('meta_keywords'),
+                    Block::make([
+                        Text::make('name')->required()->translatable('product'),
+                        Slug::make('slug')->from('name')->unique()->translatable('product'),
+                        Textarea::make('description')->translatable('product'),
+                        BelongsTo::make('parent', 'category', resource: new CategoryResource())
+                            ->nullable()
+                            ->badge()
+                            ->translatable('product')
+                            ->asyncSearch(),
+                        Switcher::make('publish', 'is_publish')->translatable('product'),
+                    ]),
                 ])->columnSpan(8),
                 Column::make([
+                    Textarea::make('meta_description')->translatable('product'),
+                    Text::make('meta_keywords')->translatable('product'),
+                    Image::make('thumbnail')->dir('products')->removable()->translatable('product'),
                     Number::make('sorting')->buttons()->default(0),
-                    Text::make('user_id')->required(),
-                    Text::make('type')->required(),
-                    Image::make('thumbnail')->dir('categories')->translatable('product'),
-                    Switcher::make('publish', 'is_publish')->translatable('product')->required(),
                 ])->columnSpan(4),
             ]),
-            Textarea::make('description')->translatable('product'),
-            Textarea::make('meta_description')->translatable('product'),
         ];
     }
 
     public function rules(Model $item): array
     {
         return [
-            'user_id' => ['required'],
-            'type' => ['required'],
             'name' => ['required'],
+            'slug' => ['nullable'],
+            'description' => ['nullable'],
+            'thumbnail' => ['nullable', 'dimensions:min_width=100,min_height=200'],
             'is_publish' => ['required'],
+            'meta_description' => ['nullable'],
+            'meta_keywords' => ['nullable'],
         ];
     }
 
@@ -182,29 +147,6 @@ class CategoryResource extends TreeResource
     {
         return ['name'];
     }
-
-    /*
-    * Быстрые фильтры
-    */
-    // public function queryTags(): array
-    // {
-    //     return [
-    //         QueryTag::make(
-    //             'all',
-    //             fn (Builder $query) => $query
-    //         )->translatable('product')->default(),
-
-    //         QueryTag::make(
-    //             'publish',
-    //             fn (Builder $query) => $query->where('is_publish', '1')
-    //         )->translatable('product'),
-
-    //         QueryTag::make(
-    //             'not_publish',
-    //             fn (Builder $query) => $query->where('is_publish', '0')
-    //         )->translatable('product'),
-    //     ];
-    // }
 
     public function treeKey(): ?string
     {
