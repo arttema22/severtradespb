@@ -9,6 +9,7 @@ use App\Models\Page;
 use App\Models\Product;
 use App\Models\Tag;
 use App\MoonShine\Resources\CategoryResource;
+use App\MoonShine\Resources\MenuResource;
 use App\MoonShine\Resources\PageResource;
 use MoonShine\MoonShine;
 use MoonShine\Menu\MenuItem;
@@ -73,6 +74,8 @@ class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
             MenuItem::make('contact', 'http://localhost:8000/contact')
                 ->translatable('page')
                 ->canSee(fn () => !request()->routeIs('moonshine.*')),
+
+            MenuItem::make('menu', new MenuResource)->icon('heroicons.outline.bars-3')->translatable('site'),
         ];
     }
 
