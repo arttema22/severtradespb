@@ -14,15 +14,8 @@ class HomeController extends Controller
         $categories = Category::where('category_id', null)->get();
 
         $products = Product::query()
-            //->with(['categories', 'tags'])
-            //->withComments()
-            //->withLikes()
-            //->published()
-            ->latest()
-            ->take(6)
+            //->homepage()
             ->get();
-
-        // dd($categories);
 
         return view('welcome', compact('products', 'categories'));
     }

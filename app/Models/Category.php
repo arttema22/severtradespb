@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Catalog\Product;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Catalog\Productattribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -15,7 +17,7 @@ class Category extends Model
      */
     public function products()
     {
-        return $this->belongsToMany(Product::class);
+        return $this->hasMany(Product::class);
     }
 
     /**
@@ -41,5 +43,13 @@ class Category extends Model
     public function childrenCategories()
     {
         return $this->hasMany(Category::class)->with('categories');
+    }
+
+    /**
+     * Атрибуты для товаров данной категории.
+     */
+    public function attributes()
+    {
+        return $this->belongsToMany(Productattribute::class);
     }
 }

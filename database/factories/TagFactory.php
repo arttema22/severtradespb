@@ -2,22 +2,15 @@
 
 namespace Database\Factories;
 
+use MoonShine\Models\MoonshineUser;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Tag>
- */
 class TagFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            'user_id' => fake()->numberBetween(1, 1),
+            'moonshine_user_id' => MoonshineUser::query()->inRandomOrder()->value('id'),
             'type' => fake()->numberBetween(1, 2),
             'name' => ucfirst($this->faker->words(2, true)),
             'slug' => $this->faker->slug(),

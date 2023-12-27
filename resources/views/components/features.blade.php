@@ -93,7 +93,8 @@
                     <div>
                         <div id="tabs-with-card-1" role="tabpanel" aria-labelledby="tabs-with-card-item-1">
                             <img class="shadow-xl shadow-gray-200 rounded-xl dark:shadow-gray-900/[.2]"
-                                src="/storage/images/nerzhaveyushhij-metalloprokat.jpg" alt="Image Description">
+                                src="{{ asset('/storage/images/nerzhaveyushhij-metalloprokat.jpg') }}"
+                                alt="Image Description">
                         </div>
                     </div>
                     <!-- End Tab Content -->

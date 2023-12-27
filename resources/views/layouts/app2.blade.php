@@ -3,8 +3,11 @@
 
 <head>
     @yield('meta')
-    @vite('resources/css/app.css')
-    @vite('resources/js/app.js')
+    @vite([
+    'resources/css/app.css',
+    'resources/js/app.js'
+    ])
+    {{-- @vite('resources/js/app.js') --}}
 </head>
 
 <body>
@@ -38,9 +41,10 @@
                 class="hs-collapse hidden overflow-hidden transition-all duration-300 basis-full grow sm:block">
                 <div
                     class="flex flex-col gap-y-4 gap-x-0 mt-5 sm:flex-row sm:items-center sm:justify-end sm:gap-y-0 sm:gap-x-7 sm:mt-0 sm:ps-7">
-                    @foreach(\App\Models\MenuItem::whereNull('parent_id')->get() as $menuItem)
-                    <x-menu-item :menuItem="$menuItem" />
-                    @endforeach
+                    {{-- @foreach(\App\Models\MenuItem::whereNull('parent_id')->get() as $menuItem) --}}
+                    {{--
+                    <x-menu-item :menuItem="$menuItem" /> --}}
+                    {{-- @endforeach --}}
                 </div>
             </div>
         </nav>

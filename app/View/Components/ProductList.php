@@ -23,7 +23,7 @@ class ProductList extends Component
      */
     public function render(): View|Closure|string
     {
-        $products = Product::where('is_publish', 1)->get();
+        $products = Product::productlist()->get();
 
         return view('components.product-list', [
             'products' => $products,

@@ -4,28 +4,19 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources;
 
-use App\Models\Product;
 use App\Models\Category;
-use MoonShine\Fields\ID;
-use MoonShine\Fields\Date;
-
 use MoonShine\Fields\Slug;
 use MoonShine\Fields\Text;
 use MoonShine\Fields\Image;
 use MoonShine\Fields\Hidden;
 use MoonShine\Fields\Number;
-use MoonShine\Fields\TinyMce;
-use MoonShine\Fields\Position;
 use MoonShine\Fields\Switcher;
 use MoonShine\Fields\Textarea;
 use MoonShine\Decorations\Grid;
 use MoonShine\Decorations\Block;
 use MoonShine\Decorations\Column;
-use MoonShine\Fields\StackFields;
-use MoonShine\QueryTags\QueryTag;
 use MoonShine\Pages\Crud\FormPage;
 use MoonShine\Pages\Crud\DetailPage;
-use MoonShine\Resources\ModelResource;
 use Illuminate\Database\Eloquent\Model;
 use App\MoonShine\Pages\CategoryTreePage;
 use Illuminate\Database\Eloquent\Builder;
@@ -33,6 +24,7 @@ use MoonShine\ActionButtons\ActionButton;
 use MoonShine\Fields\Relationships\BelongsTo;
 use Leeto\MoonShineTree\Resources\TreeResource;
 use MoonShine\Fields\Relationships\BelongsToMany;
+use App\MoonShine\Resources\Catalog\ProductattributeResource;
 
 class CategoryResource extends TreeResource
 {
@@ -98,6 +90,8 @@ class CategoryResource extends TreeResource
                     Text::make('meta_keywords')->translatable('product'),
                     Image::make('thumbnail')->dir('products')->removable()->translatable('product'),
                     Number::make('sorting')->buttons()->default(0),
+                    BelongsToMany::make('attributes', 'attributes', resource: new ProductattributeResource())
+                        ->selectMode()->creatable(),
                 ])->columnSpan(4),
             ]),
         ];

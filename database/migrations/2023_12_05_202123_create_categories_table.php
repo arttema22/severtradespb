@@ -4,6 +4,7 @@ use App\Models\Category;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use MoonShine\Models\MoonshineUser;
 
 return new class extends Migration
 {
@@ -14,12 +15,11 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('moonshine_users')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            $table->foreignIdFor(MoonshineUser::class)
+                ->nullable()
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->nullOnDelete();
             $table->integer('type')->default('1')->comment('Тип');
             $table->foreignIdFor(Category::class)
                 ->nullable()
@@ -44,6 +44,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        if (app()->isLocal()) {
+            Schema::dropIfExists('categories');
+        }
     }
 };

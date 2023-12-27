@@ -1,18 +1,17 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\catalog;
 
-use App\Models\Product;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ProductSeeder extends Seeder
+class ProductattributevalueSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Product::factory(5)->create();
+        //
     }
 }

@@ -5,29 +5,25 @@ declare(strict_types=1);
 namespace App\MoonShine\Resources;
 
 use App\Models\Tag;
-use MoonShine\Fields\ID;
-
-use MoonShine\Fields\Date;
 use MoonShine\Fields\Slug;
 use MoonShine\Fields\Text;
 use MoonShine\Fields\Image;
 use MoonShine\Fields\Hidden;
-use MoonShine\Fields\TinyMce;
 use MoonShine\Fields\Position;
 use MoonShine\Fields\Switcher;
 use MoonShine\Fields\Textarea;
 use MoonShine\Decorations\Grid;
+use MoonShine\Decorations\Block;
 use MoonShine\Enums\ClickAction;
 use MoonShine\Decorations\Column;
 use MoonShine\Fields\StackFields;
 use MoonShine\QueryTags\QueryTag;
-use Illuminate\Support\Facades\Auth;
 use MoonShine\Resources\ModelResource;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use MoonShine\ActionButtons\ActionButton;
-use MoonShine\Decorations\Block;
 use MoonShine\Fields\Relationships\BelongsToMany;
+use App\MoonShine\Resources\Catalog\ProductResource;
 
 class TagResource extends ModelResource
 {
@@ -60,15 +56,16 @@ class TagResource extends ModelResource
     {
         return [
             Position::make(),
-            Image::make('thumbnail')->dir('products')->translatable('product'),
+            //Image::make('thumbnail')->dir('products')->translatable('product'),
             StackFields::make('title')->fields([
-                Text::make('name')->updateOnPreview()->translatable('product'),
-                Slug::make('slug')->translatable('product'),
-            ])->translatable('product'),
+                Text::make('name')->updateOnPreview()->translatable('catalog'),
+                Slug::make('slug')->translatable('catalog'),
+            ])->translatable('catalog'),
             BelongsToMany::make('in_product', 'products', resource: new ProductResource)
                 ->onlyCount()
-                ->translatable('product'),
-            Switcher::make('publish', 'is_publish')->updateOnPreview()->translatable('product')->sortable(),
+                ->translatable('catalog'),
+            Switcher::make('publish', 'is_publish')->updateOnPreview()
+                ->translatable('catalog')->sortable(),
         ];
     }
 

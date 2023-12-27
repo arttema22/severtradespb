@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Models\Category;
-use Illuminate\Http\Request;
+use App\Models\Catalog\Product;
 
 class ProductController extends Controller
 {
@@ -16,6 +15,9 @@ class ProductController extends Controller
         //     ->get();
 
         if ($slug) {
+
+
+
             $product = Product::query()
                 ->where('slug', $slug)
                 ->where('is_publish', 1)
@@ -27,9 +29,15 @@ class ProductController extends Controller
                 ->where('is_publish', 1)
                 ->get();
 
-            return view('products.show', [
+            $product->load(['optionValues.option']);
+            $options = $product->optionValues->mapToGroups(function ($item) {
+                return [$item->option->title => $item];
+            });
+
+            return view('catalog.products.show', [
                 'product' => $product,
                 'categories' => $categories,
+                'options' => $options,
             ]);
         }
 

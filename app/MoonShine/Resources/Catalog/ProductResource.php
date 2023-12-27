@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\MoonShine\Resources;
+namespace App\MoonShine\Resources\Catalog;
 
-use App\Models\Product;
-use MoonShine\Fields\ID;
-use MoonShine\Fields\Date;
+use MoonShine\Fields\Json;
 use MoonShine\Fields\Slug;
 use MoonShine\Fields\Text;
 use MoonShine\Fields\Image;
@@ -15,6 +13,7 @@ use MoonShine\Fields\TinyMce;
 use MoonShine\Fields\Position;
 use MoonShine\Fields\Switcher;
 use MoonShine\Fields\Textarea;
+use App\Models\Catalog\Product;
 use MoonShine\Decorations\Grid;
 use MoonShine\Decorations\Block;
 use MoonShine\Decorations\Column;
@@ -22,8 +21,11 @@ use MoonShine\Fields\StackFields;
 use MoonShine\QueryTags\QueryTag;
 use MoonShine\Resources\ModelResource;
 use Illuminate\Database\Eloquent\Model;
+use App\MoonShine\Resources\TagResource;
 use Illuminate\Database\Eloquent\Builder;
 use MoonShine\ActionButtons\ActionButton;
+use App\MoonShine\Resources\CategoryResource;
+use MoonShine\Fields\Relationships\BelongsTo;
 use MoonShine\Fields\Relationships\BelongsToMany;
 
 
@@ -31,13 +33,13 @@ class ProductResource extends ModelResource
 {
     protected string $model = Product::class;
 
-    // protected bool $createInModal = true;
+    protected bool $createInModal = false;
 
-    // protected bool $editInModal = true;
+    protected bool $editInModal = false;
 
-    public string $column = 'title';
+    public string $column = 'name';
 
-    protected bool $isAsync = true;
+    // protected bool $isAsync = true;
 
     public function title(): string
     {
@@ -48,23 +50,32 @@ class ProductResource extends ModelResource
     {
         return [
             Position::make(),
-            Image::make('thumbnail')->dir('products')->translatable('product'),
+            //Json::make('characteristics')->keyValue()->translatable('product'),
+            //Image::make('thumbnail')->dir('products')->translatable('product'),
             StackFields::make('title')->fields([
-                Text::make('name')->translatable('product'),
-                Slug::make('slug')->translatable('product'),
-            ])->translatable('product'),
-            Text::make('size')->sortable()->translatable('product'),
-            Text::make('mark')->sortable()->translatable('product'),
-            Text::make('length')->sortable()->translatable('product'),
-            Switcher::make('publish', 'is_publish')->updateOnPreview()->translatable('product')->sortable(),
-            BelongsToMany::make('categories', 'categories', resource: new CategoryResource)
-                ->inLine(separator: ' ', badge: true)
-                ->creatable()
-                ->translatable('product'),
+                Text::make('name')->translatable('catalog'),
+                Slug::make('slug')->translatable('catalog'),
+            ])->translatable('catalog'),
+            //Text::make('size')->sortable()->translatable('product'),
+            //Text::make('mark')->sortable()->translatable('product'),
+            //Text::make('length')->sortable()->translatable('product'),
+            BelongsTo::make('category', 'category', resource: new CategoryResource)
+                ->translatable('catalog'),
             BelongsToMany::make('tags', 'tags', resource: new TagResource)
                 ->inLine(separator: ' ', badge: true)
                 ->creatable()
-                ->translatable('product'),
+                ->translatable('catalog'),
+            // HasMany::make('attributes', 'values', resource: new ProductattributevalueResource())
+            //     ->fields([
+            //         Text::make('', 'attribute.name'),
+            //         Text::make('', 'value_text'),
+            //     ]),
+            BelongsToMany::make('options', 'optionValues', resource: new OptionValueResource())
+                //->inLine(separator: ' ', badge: true)
+                //->creatable()
+                ->translatable('catalog'),
+            Switcher::make('publish', 'is_publish')->updateOnPreview()
+                ->translatable('catalog')->sortable(),
         ];
     }
 
@@ -78,7 +89,10 @@ class ProductResource extends ModelResource
                         Text::make('name')->required()->translatable('product'),
                         Slug::make('slug')->from('name')->unique()->translatable('product'),
                         TinyMce::make('description')->translatable('product'),
-                        Text::make('characteristics')->translatable('product'),
+                        Json::make('characteristics')
+                            ->creatable()
+                            ->removable()
+                            ->keyValue()->translatable('product'),
                         Grid::make([
                             Column::make([
                                 Text::make('size')->translatable('product'),
@@ -98,15 +112,14 @@ class ProductResource extends ModelResource
                     Text::make('meta_keywords')->translatable('product'),
                     Image::make('thumbnail')->dir('products')->removable()->translatable('product'),
 
-                    BelongsToMany::make('categories', 'categories', resource: new CategoryResource)
-                        ->creatable()
-                        //->tree('category_id')
-                        ->selectMode()
+                    BelongsTo::make('category', 'category', resource: new CategoryResource)
+                        ->searchable()
                         ->translatable('product'),
                     BelongsToMany::make('tags', 'tags', resource: new TagResource)
                         ->creatable()
                         ->selectMode()
                         ->translatable('product'),
+                    //    HasMany::make('values', 'values', resource: new ProductattributevalueResource()),
                 ])->columnSpan(4),
             ]),
         ];

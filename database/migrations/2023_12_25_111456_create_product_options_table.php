@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('menu_items', function (Blueprint $table) {
+        Schema::create('product_options', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('url')->nullable();
-            $table->unsignedInteger('parent_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -25,6 +24,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('menu_items');
+        if (app()->isLocal()) {
+            Schema::dropIfExists('product_options');
+        }
     }
 };
