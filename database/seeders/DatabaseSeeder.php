@@ -25,14 +25,14 @@ class DatabaseSeeder extends Seeder
         Category::factory(15)->create();
 
         // создаем теги
-        $tagValues = Tag::factory(20)->create();
+        $tagValues = Tag::factory(5)->create();
 
         // создаем опции для товаров
         ProductOptionFactory::new()->count(3)->create();
 
-        $productOptionValues = ProductOptionValueFactory::new()->count(30)->create();
+        $productOptionValues = ProductOptionValueFactory::new()->count(5)->create();
 
-        Product::factory(50)
+        Product::factory(150)
             ->hasAttached($productOptionValues)
             ->hasAttached($tagValues)
             ->create();

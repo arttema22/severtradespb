@@ -2,13 +2,12 @@
 
 namespace App\View\Components;
 
+use App\Models\Slider;
 use Closure;
-use App\Models\Category;
-use Illuminate\View\Component;
-use App\Models\Catalog\Product;
 use Illuminate\Contracts\View\View;
+use Illuminate\View\Component;
 
-class ProductList extends Component
+class SwiperSlider extends Component
 {
     /**
      * Create a new component instance.
@@ -23,10 +22,12 @@ class ProductList extends Component
      */
     public function render(): View|Closure|string
     {
-        $products = Product::productlist()->get();
+        $slides = Slider::where('is_publish', 1)
+            ->orderBy('sorting')
+            ->get();
 
-        return view('components.product-list', [
-            'products' => $products,
+        return view('components.swiper-slider', [
+            'slides' => $slides,
         ]);
     }
 }

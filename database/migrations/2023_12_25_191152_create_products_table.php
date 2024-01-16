@@ -43,7 +43,7 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        Schema::create('option_value_product', function (Blueprint $table) {
+        Schema::create('product_option_value_product', function (Blueprint $table) {
             $table->foreignIdFor(ProductOptionValue::class)
                 ->constrained()
                 ->cascadeOnDelete()
@@ -72,7 +72,7 @@ return new class extends Migration
     public function down(): void
     {
         if (app()->isLocal()) {
-            Schema::dropIfExists('option_value_product');
+            Schema::dropIfExists('product_option_value_product');
             Schema::dropIfExists('product_tag');
             Schema::dropIfExists('products');
         }

@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use MoonShine\Fields\Relationships\HasMany;
 use MoonShine\Fields\Text;
 
-class OptionResource extends ModelResource
+class ProductOptionResource extends ModelResource
 {
     protected string $model = ProductOption::class;
 
@@ -28,12 +28,14 @@ class OptionResource extends ModelResource
             Block::make([
                 Text::make('title')->translatable('catalog'),
             ]),
-            HasMany::make('values', 'values', resource: new OptionValueResource())
+            HasMany::make('values', 'values', resource: new ProductOptionValueResource())
                 ->fields(
                     [
                         Text::make('', 'title'),
                     ]
-                )->creatable(),
+                )->creatable()
+            //->onlyLink()
+            ,
         ];
     }
 

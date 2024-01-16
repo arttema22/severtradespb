@@ -3,11 +3,12 @@
 
 <head>
     @yield('meta')
-    @vite([
-    'resources/css/app.css',
-    'resources/js/app.js'
-    ])
-    {{-- @vite('resources/js/app.js') --}}
+    <!-- swiper css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <!-- icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.0.1/fonts/remixicon.min.css">
+    <!-- css -->
+    @vite('resources/css/app.css')
 </head>
 
 <body>
@@ -97,6 +98,10 @@
         </div>
         <!-- End Grid -->
     </footer>
+
+    <!-- swiper -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    @vite('resources/js/app.js')
 </body>
 
 </html>

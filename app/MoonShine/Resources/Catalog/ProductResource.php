@@ -70,7 +70,7 @@ class ProductResource extends ModelResource
             //         Text::make('', 'attribute.name'),
             //         Text::make('', 'value_text'),
             //     ]),
-            BelongsToMany::make('options', 'optionValues', resource: new OptionValueResource())
+            BelongsToMany::make('options', 'productOptionValues', resource: new ProductOptionValueResource())
                 //->inLine(separator: ' ', badge: true)
                 //->creatable()
                 ->translatable('catalog'),

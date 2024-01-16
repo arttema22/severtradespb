@@ -2,6 +2,10 @@
 
 @section('content')
 
+<!-- Slider -->
+<x-swiper-slider />
+<!-- end Slider -->
+
 <x-we-love-metal />
 
 <!-- Features -->

@@ -58,8 +58,8 @@ class Product extends Model
     /**
      * Получить все значения опций для товара.
      */
-    public function optionValues()
+    public function productOptionValues()
     {
-        return $this->belongsToMany(ProductOptionValue::class);
+        return $this->belongsToMany(ProductOptionValue::class, 'product_option_value_product');
     }
 }

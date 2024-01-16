@@ -17,12 +17,13 @@ use App\MoonShine\Resources\PageResource;
 use App\MoonShine\Resources\CategoryResource;
 use MoonShine\Resources\MoonShineUserResource;
 use MoonShine\Resources\MoonShineUserRoleResource;
-use App\MoonShine\Resources\Catalog\OptionResource;
 use App\MoonShine\Resources\Catalog\ProductResource;
-use App\MoonShine\Resources\Catalog\OptionValueResource;
+use App\MoonShine\Resources\Catalog\ProductOptionResource;
 use MoonShine\Providers\MoonShineApplicationServiceProvider;
 use App\MoonShine\Resources\Catalog\ProductattributeResource;
+use App\MoonShine\Resources\Catalog\ProductOptionValueResource;
 use App\MoonShine\Resources\Catalog\ProductattributevalueResource;
+use App\MoonShine\Resources\Site\SliderResource;
 
 class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
 {
@@ -49,10 +50,10 @@ class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
                 MenuItem::make('tags', new TagResource)->icon('heroicons.outline.tag')
                     ->translatable('catalog')
                     ->badge(fn () => strval(Tag::query()->where('type', 1)->count())),
-                MenuItem::make('options', new OptionResource)->icon('heroicons.outline.tag')
+                MenuItem::make('options', new ProductOptionResource)->icon('heroicons.outline.tag')
                     ->translatable('catalog')
                     ->badge(fn () => strval(ProductOption::query()->count())),
-                MenuItem::make('option values', new OptionValueResource)->icon('heroicons.outline.tag')
+                MenuItem::make('option values', new ProductOptionValueResource)->icon('heroicons.outline.tag')
                     ->translatable('catalog'),
             ])->icon('heroicons.square-3-stack-3d')->translatable('catalog'),
             // ->canSee(fn () => request()->routeIs('moonshine.*')),
@@ -89,6 +90,8 @@ class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
 
             MenuItem::make('attributes', new ProductAttributeResource)->icon('heroicons.outline.bars-3')->translatable('site'),
             MenuItem::make('values', new ProductattributevalueResource)->icon('heroicons.outline.bars-3')->translatable('site'),
+
+            MenuItem::make('slider', new SliderResource)->icon('heroicons.outline.photo')->translatable('site'),
 
         ];
     }
